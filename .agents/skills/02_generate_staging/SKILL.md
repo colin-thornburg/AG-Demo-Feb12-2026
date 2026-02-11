@@ -13,12 +13,15 @@ Create `stg_raw_*` models that:
 
 ## Hard rules (demo safety)
 - Every staging model MUST compile even if raw data is dirty.
+- Staging is normalization + dedupe only; do not perform type casting in staging
+- Only use safe_to_number() if you explicitly encounter a string amount column
 - Use the macros:
   - `{{ dedupe_latest(relation, key_cols, updated_at_col) }}`
   - `{{ normalize_policy_status(col) }}`, `{{ normalize_lob(col) }}`, `{{ normalize_claim_status(col) }}`, `{{ normalize_txn_type(col) }}`
   - `{{ safe_to_number(col, scale=2) }}` when casting amounts
 - Never reference columns not in source.
 - No refs to non-existent models.
+- Do not cast timestamps with try_to_timestamp_*; pass through created_at/updated_at as-is.
 
 ## Required staging models
 - `models/staging/stg_raw_customer.sql`
@@ -65,5 +68,7 @@ Create `models/staging/schema.yml`:
 - relationships staging->staging with `severity: warn` (messy acquisitions).
 
 ## When done
-Provide commands:
+Execute commands:
 - `dbt build -s staging`
+
+## if there is an error in the logs or the build is not successful because of a syntax error, fix the error and re-excute
