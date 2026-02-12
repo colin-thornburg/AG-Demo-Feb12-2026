@@ -15,6 +15,9 @@ sources:
         columns:
           - name: claim_id
             description: "Primary/foreign key identifier"
+            tests:
+              - not_null
+              - unique
           - name: source_system
             description: "Raw field — review for business meaning"
           - name: acq_entity
@@ -25,6 +28,16 @@ sources:
             description: "Monetary amount (raw, unvalidated)"
           - name: policy_id
             description: "Primary/foreign key identifier"
+            tests:
+              - not_null:
+                  config:
+                    severity: warn
+              - relationships:
+                  config:
+                    severity: warn
+                  arguments:
+                    to: source('raw_acq', 'raw_policy')
+                    field: policy_id
           - name: loss_date
             description: "Timestamp field"
           - name: updated_at
@@ -39,6 +52,16 @@ sources:
         columns:
           - name: claim_id
             description: "Primary/foreign key identifier"
+            tests:
+              - not_null:
+                  config:
+                    severity: warn
+              - relationships:
+                  config:
+                    severity: warn
+                  arguments:
+                    to: source('raw_acq', 'raw_claim')
+                    field: claim_id
           - name: acq_entity
             description: "Raw field — review for business meaning"
           - name: txn_type
@@ -53,6 +76,9 @@ sources:
             description: "Monetary amount (raw, unvalidated)"
           - name: claim_txn_id
             description: "Primary/foreign key identifier"
+            tests:
+              - not_null
+              - unique
 
       - name: raw_customer
         description: "Raw AssuredPartners Southeast Region — raw customer table"
@@ -69,6 +95,9 @@ sources:
             description: "Raw field — review for business meaning"
           - name: customer_id
             description: "Primary/foreign key identifier"
+            tests:
+              - not_null
+              - unique
           - name: updated_at
             description: "Timestamp field"
           - name: state
@@ -83,6 +112,9 @@ sources:
             description: "Raw field — review for business meaning"
           - name: policy_id
             description: "Primary/foreign key identifier"
+            tests:
+              - not_null
+              - unique
           - name: updated_at
             description: "Timestamp field"
           - name: written_premium
@@ -93,6 +125,16 @@ sources:
             description: "Raw field — review for business meaning"
           - name: customer_id
             description: "Primary/foreign key identifier"
+            tests:
+              - not_null:
+                  config:
+                    severity: warn
+              - relationships:
+                  config:
+                    severity: warn
+                  arguments:
+                    to: source('raw_acq', 'raw_customer')
+                    field: customer_id
           - name: source_system
             description: "Raw field — review for business meaning"
           - name: carrier
