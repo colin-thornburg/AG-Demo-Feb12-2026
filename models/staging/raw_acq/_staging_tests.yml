@@ -1,0 +1,63 @@
+version: 2
+
+models:
+  - name: stg_raw_acq__customer
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_raw_acq__policy
+    columns:
+      - name: policy_id
+        tests:
+          - not_null
+          - unique
+      - name: customer_id
+        tests:
+          - not_null:
+              config:
+                severity: warn
+          - relationships:
+              arguments:
+                to: ref('stg_raw_acq__customer')
+                field: customer_id
+              config:
+                severity: warn
+
+  - name: stg_raw_acq__claim
+    columns:
+      - name: claim_id
+        tests:
+          - not_null
+          - unique
+      - name: policy_id
+        tests:
+          - not_null:
+              config:
+                severity: warn
+          - relationships:
+              arguments:
+                to: ref('stg_raw_acq__policy')
+                field: policy_id
+              config:
+                severity: warn
+
+  - name: stg_raw_acq__claim_txn
+    columns:
+      - name: claim_txn_id
+        tests:
+          - not_null
+          - unique
+      - name: claim_id
+        tests:
+          - not_null:
+              config:
+                severity: warn
+          - relationships:
+              arguments:
+                to: ref('stg_raw_acq__claim')
+                field: claim_id
+              config:
+                severity: warn
