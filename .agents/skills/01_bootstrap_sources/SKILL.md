@@ -29,6 +29,7 @@ Given a Snowflake database and schema containing raw acquisition data, **discove
 - ALL relationship tests MUST use `severity: warn` (acquired data has orphaned keys).
 - ALL accepted_values tests MUST use `severity: warn` (code values vary by source system).
 - Output files go in `models/staging/{source_name}/` — NOT in the project root.
+- Do NOT generate `freshness` or `loaded_at_field` in source YAML.
 
 ## Step 1: Discover Tables
 If tables are not provided, query `INFORMATION_SCHEMA.TABLES`:
@@ -61,14 +62,6 @@ sources:
       Loaded as-is — no transformations applied.
       Known issues: inconsistent code values, potential duplicates,
       null names/fields, late-arriving updates, orphaned foreign keys.
-    freshness:
-      warn_after:
-        count: 24
-        period: hour
-      error_after:
-        count: 72
-        period: hour
-    loaded_at_field: "coalesce(updated_at, created_at, current_timestamp())"
     tables:
       - name: {table_name_snake_case}
         description: "Raw {entity_label} — {table description}"
