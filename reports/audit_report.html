@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dbt Project Audit - AssuredPartners Demo</title>
+  <style>
+    :root {
+      --bg: #0F172A;
+      --card: #1E293B;
+      --navy: #1B2A4A;
+      --accent: #FF694A;
+      --pass: #22C55E;
+      --warn: #F59E0B;
+      --fail: #EF4444;
+      --text: #E2E8F0;
+      --muted: #94A3B8;
+      --border: #334155;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, sans-serif;
+      background: linear-gradient(180deg, var(--bg), #0B1324 60%, #0A1020 100%);
+      color: var(--text);
+      padding: 24px;
+    }
+    .container { max-width: 1120px; margin: 0 auto; }
+    .header {
+      background: linear-gradient(135deg, var(--navy), #24395f);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+    .title { margin: 0; font-size: 28px; }
+    .sub { margin-top: 6px; color: #c7d2fe; font-size: 14px; }
+    .dashboard {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .score {
+      font-size: 56px;
+      line-height: 1;
+      font-weight: 800;
+      color: var(--pass);
+      margin: 2px 0 8px;
+    }
+    .label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+    .metric { font-size: 30px; font-weight: 700; margin-top: 8px; }
+    .pass { color: var(--pass); }
+    .warn { color: var(--warn); }
+    .fail { color: var(--fail); }
+    .category {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 5px solid var(--pass);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .category.warn-border { border-left-color: var(--warn); }
+    .category.fail-border { border-left-color: var(--fail); }
+    .cat-header {
+      width: 100%;
+      background: transparent;
+      color: var(--text);
+      border: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 16px;
+    }
+    .cat-meta { color: var(--muted); font-size: 12px; }
+    .cat-body { display: none; padding: 0 16px 14px; }
+    .cat-body.open { display: block; }
+    .check {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+    .check.pass-bg { background: rgba(34, 197, 94, 0.10); }
+    .check.warn-bg { background: rgba(245, 158, 11, 0.12); }
+    .check.fail-bg { background: rgba(239, 68, 68, 0.12); }
+    .row { display: flex; gap: 10px; align-items: center; }
+    .status { min-width: 64px; font-weight: 700; font-size: 12px; letter-spacing: .06em; }
+    .detail { margin-top: 5px; color: var(--muted); font-size: 12px; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: #fecaca; }
+    .footer {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: #111c34;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    @media (max-width: 980px) {
+      .dashboard { grid-template-columns: 1fr 1fr; }
+      .score { font-size: 44px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="header">
+      <h1 class="title">dbt Project Audit Report</h1>
+      <div class="sub">Project: <strong>ag-demo</strong> | Source: <strong>raw_acq</strong> | Entity: <strong>AssuredPartners Demo</strong> | Timestamp: <strong>2026-02-12 12:58:15 PST</strong></div>
+    </section>
+
+    <section class="dashboard">
+      <div class="card">
+        <div class="label">Overall Score</div>
+        <div class="score">97%</div>
+        <div class="cat-meta">37 / 38 checks passed</div>
+      </div>
+      <div class="card">
+        <div class="label">Total Checks</div>
+        <div class="metric">38</div>
+      </div>
+      <div class="card">
+        <div class="label">PASS</div>
+        <div class="metric pass">37</div>
+      </div>
+      <div class="card">
+        <div class="label">WARN</div>
+        <div class="metric warn">1</div>
+      </div>
+      <div class="card">
+        <div class="label">FAIL</div>
+        <div class="metric fail">0</div>
+      </div>
+    </section>
+
+    <section class="category">
+      <button class="cat-header" data-target="cat-1"><span>1. Naming Conventions</span><span class="cat-meta">6 / 6 pass</span></button>
+      <div id="cat-1" class="cat-body">
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>All model filenames use snake_case.</span></div><div class="detail">Verified across all SQL/YAML under <code>models/</code>.</div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>Staging model pattern <code>stg_raw_acq__*.sql</code> is followed.</span></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>Mart/fact model pattern <code>f_*.sql</code> is followed.</span></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>Source name in <code>_sources.yml</code> is snake_case.</span></div><div class="detail">File: <code>models/staging/raw_acq/_sources.yml</code></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>All YAML table/column names are snake_case.</span></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>No camelCase/hyphen model identifiers found.</span></div></div>
+      </div>
+    </section>
+
+    <section class="category">
+      <button class="cat-header" data-target="cat-2"><span>2. Project Structure</span><span class="cat-meta">5 / 5 pass</span></button>
+      <div id="cat-2" class="cat-body">
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>Sources YAML is located in <code>models/staging/raw_acq/</code>.</span></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>Staging SQL models are located in <code>models/staging/raw_acq/</code>.</span></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>Mart SQL models are located in <code>models/marts/raw_acq/</code>.</span></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>No SQL files exist in root <code>models/</code>.</span></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>No orphaned SQL files outside expected directories.</span></div></div>
+      </div>
+    </section>
+
+    <section class="category">
+      <button class="cat-header" data-target="cat-3"><span>3. Source Definitions</span><span class="cat-meta">4 / 4 pass</span></button>
+      <div id="cat-3" class="cat-body">
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>All raw tables in scope have source definitions.</span></div><div class="detail">Tables: <code>raw_customer</code>, <code>raw_policy</code>, <code>raw_claim</code>, <code>raw_claim_txn</code>.</div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>Source has a non-empty description.</span></div><div class="detail">File: <code>models/staging/raw_acq/_sources.yml</code></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>Source has freshness configuration.</span></div><div class="detail">Located under <code>sources[0].config.freshness</code> in <code>models/staging/raw_acq/_sources.yml</code>.</div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>All tables include documented columns.</span></div></div>
+      </div>
+    </section>
+
+    <section class="category warn-border">
+      <button class="cat-header" data-target="cat-4"><span>4. Staging Standards</span><span class="cat-meta">5 pass, 1 warn</span></button>
+      <div id="cat-4" class="cat-body">
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>All staging models use <code>source()</code> (no hardcoded raw tables).</span></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>All staging models use <code>dedupe_latest</code>.</span></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>Normalization macros are used where applicable; no inline normalization CASE blocks.</span></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>No timestamp cast functions found in staging SQL.</span></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>No <code>SELECT *</code> in final select statements.</span></div></div>
+        <div class="check warn-bg"><div class="row"><span class="status warn">⚠ WARN</span><span>Explicit aliasing is partial: pass-through columns are selected directly without <code>as column_name</code>.</span></div><div class="detail">Files: <code>models/staging/raw_acq/stg_raw_acq__customer.sql</code>, <code>models/staging/raw_acq/stg_raw_acq__claim.sql</code>, <code>models/staging/raw_acq/stg_raw_acq__policy.sql</code>, <code>models/staging/raw_acq/stg_raw_acq__claim_txn.sql</code>. Remediation: add explicit aliases for all selected columns if strict aliasing is required by COE.</div></div>
+      </div>
+    </section>
+
+    <section class="category">
+      <button class="cat-header" data-target="cat-5"><span>5. Mart/Fact Standards</span><span class="cat-meta">7 / 7 pass</span></button>
+      <div id="cat-5" class="cat-body">
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>All marts use <code>ref()</code>.</span></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>All marts configure <code>materialized='incremental'</code>.</span></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>All marts configure <code>incremental_strategy='merge'</code>.</span></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>All marts define <code>unique_key</code>.</span></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>Incremental filter is implemented via <code>incremental_where('updated_at')</code>.</span></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span><code>f_policy</code> uses LEFT JOIN for customer lookup.</span></div><div class="detail">File: <code>models/marts/raw_acq/f_policy.sql</code></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>Calculated fields are null-safe using <code>coalesce</code>/<code>case</code>.</span></div></div>
+      </div>
+    </section>
+
+    <section class="category">
+      <button class="cat-header" data-target="cat-6"><span>6. Testing Coverage</span><span class="cat-meta">4 / 4 pass</span></button>
+      <div id="cat-6" class="cat-body">
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>Primary keys have <code>not_null</code> + <code>unique</code> tests.</span></div><div class="detail">Validated in <code>models/staging/raw_acq/_sources_tests.yml</code>, <code>models/staging/raw_acq/_staging_tests.yml</code>, and <code>models/marts/raw_acq/_marts_tests.yml</code>.</div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>Foreign key relationship tests are configured with warn severity.</span></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>No flaky test patterns (rowcount or exact-value assertions) found.</span></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>Minimum test coverage threshold met (>= 2 PK tests per model).</span></div></div>
+      </div>
+    </section>
+
+    <section class="category">
+      <button class="cat-header" data-target="cat-7"><span>7. Documentation</span><span class="cat-meta">3 / 3 pass</span></button>
+      <div id="cat-7" class="cat-body">
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>Source description exists and includes acquisition context.</span></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>README exists with known data issues.</span></div><div class="detail">File: <code>models/staging/raw_acq/README.md</code></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>At least 50% of YAML columns have descriptions (actual: 100%).</span></div></div>
+      </div>
+    </section>
+
+    <section class="category">
+      <button class="cat-header" data-target="cat-8"><span>8. Macro Usage (No Inline Logic)</span><span class="cat-meta">3 / 3 pass</span></button>
+      <div id="cat-8" class="cat-body">
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>No inline CASE WHEN blocks longer than 3 lines in staging models.</span></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>No inline <code>ROW_NUMBER()</code> usage in staging models.</span></div></div>
+        <div class="check pass-bg"><div class="row"><span class="status pass">✓ PASS</span><span>No <code>TRY_TO_*</code> cast functions in staging models.</span></div></div>
+      </div>
+    </section>
+
+    <section class="footer">
+      <div><strong>Standards Compliance</strong></div>
+      <div>This project was generated by AI using dbt Agent Skills.</div>
+      <div>Audited against Gallagher Blueprint v1.0 standards.</div>
+      <div>Audit timestamp: 2026-02-12 12:58:15 PST.</div>
+      <div>dbt Labs x Gallagher</div>
+    </section>
+  </div>
+
+  <script>
+    (function() {
+      var buttons = document.querySelectorAll('.cat-header');
+      buttons.forEach(function(btn, idx) {
+        var targetId = btn.getAttribute('data-target');
+        var body = document.getElementById(targetId);
+        if (idx === 0) body.classList.add('open');
+        btn.addEventListener('click', function() {
+          body.classList.toggle('open');
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: f_policy
+    columns:
+      - name: policy_id
+        tests:
+          - not_null
+          - unique
+
+  - name: f_claim
+    columns:
+      - name: claim_id
+        tests:
+          - not_null
+          - unique
+      - name: policy_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('f_policy')
+                field: policy_id
+              config:
+                severity: warn
+
+  - name: f_claim_txn
+    columns:
+      - name: claim_txn_id
+        tests:
+          - not_null
+          - unique
+      - name: claim_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('f_claim')
+                field: claim_id
+              config:
+                severity: warn
